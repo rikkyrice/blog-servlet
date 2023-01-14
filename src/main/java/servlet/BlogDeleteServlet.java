@@ -7,8 +7,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import dao.BlogDAO;
+import dto.Blog;
+import dto.User;
 
 /**
  * Servlet implementation class BlogDeleteServlet
@@ -30,8 +33,18 @@ public class BlogDeleteServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String id = request.getParameter("id");
-		BlogDAO.delete(Integer.parseInt(id));
+		int id = Integer.parseInt(request.getParameter("id"));
+		HttpSession session = request.getSession(true);
+		User loginUser = (User) session.getAttribute("loginUser");
+		Blog blog = BlogDAO.selectById(id);
+		if (blog == null) {
+			request.getRequestDispatcher("/").forward(request, response);
+		}
+		if (!loginUser.isLoginUser(blog.getUserId())) {
+			request.getRequestDispatcher("/").forward(request, response);
+		}
+		
+		BlogDAO.delete(id);
 		request.getRequestDispatcher("/").forward(request, response);
 	}
 

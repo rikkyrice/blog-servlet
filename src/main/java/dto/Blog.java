@@ -4,13 +4,15 @@ import java.time.OffsetDateTime;
 
 public class Blog {
 	private int id;
+	private String userId;
 	private String title;
 	private String body;
 	private OffsetDateTime postedAt;
 	
-	public Blog(int id, String title, String body, OffsetDateTime postedAt) {
+	public Blog(int id, String userId, String title, String body, OffsetDateTime postedAt) {
 		super();
 		this.id = id;
+		this.userId = userId;
 		this.title = title;
 		this.body = body;
 		this.postedAt = postedAt;
@@ -20,31 +22,19 @@ public class Blog {
 		return id;
 	}
 	
-	public void setId(int id) {
-		this.id = id;
+	public String getUserId() {
+		return userId;
 	}
-
+	
 	public String getTitle() {
 		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getBody() {
 		return body;
 	}
 
-	public void setBody(String body) {
-		this.body = body;
-	}
-
 	public OffsetDateTime getPostedAt() {
 		return postedAt;
-	}
-
-	public void setPostedAt(OffsetDateTime postedAt) {
-		this.postedAt = postedAt;
 	}
 }

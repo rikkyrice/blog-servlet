@@ -1,30 +1,30 @@
 package servlet;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import dao.BlogDAO;
+import dao.UserDAO;
 import dto.Blog;
 import dto.User;
 
 /**
- * Servlet implementation class BlogPostCompServlet
+ * Servlet implementation class UserServlet
  */
-@WebServlet("/postComplete")
-public class BlogPostCompServlet extends HttpServlet {
+@WebServlet("/userpage/*")
+public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public BlogPostCompServlet() {
+    public UserServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,17 +35,15 @@ public class BlogPostCompServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		request.setCharacterEncoding("UTF-8");
-		HttpSession session = request.getSession(true);
-		User loginUser = (User) session.getAttribute("loginUser");
-		String title = request.getParameter("title");
-		String body = request.getParameter("body");
-		Blog blog = new Blog(0, loginUser.getId(), title, body, OffsetDateTime.now());
-		Blog postedBlog = BlogDAO.post(blog);
-		if (postedBlog == null) {
-			request.getRequestDispatcher("blogPost.jsp").forward(request, response);
-		}
-		request.setAttribute("blog", postedBlog);
-		request.getRequestDispatcher("post/" + postedBlog.getId()).forward(request, response);
+		String id = request.getPathInfo().substring(1);
+		String message = (String) request.getAttribute("message");
+		List<Blog> blogs = BlogDAO.selectAllByUserId(id);
+		User user = UserDAO.selectById(id);
+		
+		request.setAttribute("message", message);
+		request.setAttribute("blogs", blogs);
+		request.setAttribute("user", user);
+		request.getRequestDispatcher("/userpage.jsp").forward(request, response);
 	}
 
 	/**

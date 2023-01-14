@@ -14,7 +14,7 @@ Blog blog = (Blog) request.getAttribute("blog");
 </head>
 <body>
 	<h1>ブログ編集</h1>
-	<form action="updateComplete" method="post">
+	<form action="/blog/updateComplete" method="post">
 		<input type="hidden" name="id" value="<%= blog.getId() %>">
 		<div>
 			<label>タイトル</label>

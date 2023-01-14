@@ -8,7 +8,7 @@
 </head>
 <body>
 	<h1>ブログ投稿</h1>
-	<form action="postComplete" method="post">
+	<form action="/blog/postComplete" method="post">
 		<div>
 			<label>タイトル</label>
 			<input type="text" id="blog-title" name="title">

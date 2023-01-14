@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-h2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-h2
+  template:
+    metadata:
+      labels:
+        app: my-h2
+    spec:
+      containers:
+        - name: my-h2
+          image: jp.icr.io/txx-hashiki-ns/h2db:1.0
+          imagePullPolicy: Always
+          command:
+          ports:
+            - containerPort: 9092
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-h2-service
+spec:
+  selector:
+    app: my-h2
+  ports:
+    - name: external-access
+      protocol: TCP
+      port: 9092
+      targetPort: 9092
+            

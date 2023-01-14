@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,21 +9,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.BlogDAO;
-import dto.Blog;
+import dao.UserDAO;
 import dto.User;
 
 /**
- * Servlet implementation class BlogPostCompServlet
+ * Servlet implementation class LoginServlet
  */
-@WebServlet("/postComplete")
-public class BlogPostCompServlet extends HttpServlet {
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public BlogPostCompServlet() {
+    public LoginServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,16 +34,23 @@ public class BlogPostCompServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession(true);
-		User loginUser = (User) session.getAttribute("loginUser");
-		String title = request.getParameter("title");
-		String body = request.getParameter("body");
-		Blog blog = new Blog(0, loginUser.getId(), title, body, OffsetDateTime.now());
-		Blog postedBlog = BlogDAO.post(blog);
-		if (postedBlog == null) {
-			request.getRequestDispatcher("blogPost.jsp").forward(request, response);
+		String id = request.getParameter("id");
+		String password = request.getParameter("password");
+		User user = UserDAO.selectById(id);
+		if (user == null) {
+			String message = "ユーザーが見つかりませんでした。";
+			request.setAttribute("message", message);
+			request.getRequestDispatcher("login.jsp").forward(request, response);
 		}
-		request.setAttribute("blog", postedBlog);
-		request.getRequestDispatcher("post/" + postedBlog.getId()).forward(request, response);
+		if (!user.getPassword().equals(password)) {
+			String message = "パスワードが違います。";
+			request.setAttribute("message", message);
+			request.getRequestDispatcher("login.jsp").forward(request, response);
+		}
+		String message = "ログインに成功しました。";
+		request.setAttribute("message", message);
+		session.setAttribute("loginUser", user);
+		request.getRequestDispatcher("userpage/" + user.getId()).forward(request, response);
 	}
 
 	/**
